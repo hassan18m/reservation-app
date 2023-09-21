@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/types/user';
 
@@ -8,13 +8,15 @@ import { User } from 'src/app/types/user';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
-export class UsersComponent implements OnInit{
-  
+export class UsersComponent implements OnInit {
+
   users!: User[];
 
-  constructor(private userService: UserService) { }
+  // cache
 
+  constructor(private userService: UserService) {}
+  
   ngOnInit(): void {
-    this.userService.getUsers().subscribe((data) => this.users = data);
+    this.userService.getUsers().subscribe((data) => this.users = data.users);
   }
 }

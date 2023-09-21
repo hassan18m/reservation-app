@@ -1,1 +1,18 @@
-<p>products works!</p>
+<div class="container responsive-grid">
+    <mat-card *ngFor="let product of products">
+        <mat-card-header>
+        <mat-card-title>{{ product.name }}</mat-card-title>
+        </mat-card-header>
+        <br/>
+        <img mat-card-image
+        src="https://repository-images.githubusercontent.com/24195339/87018c00-694b-11e9-8b5f-c34826306d36"/>
+        <mat-card-content>
+            <br/>
+            <p>{{ product.quantity }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button>LIKE</button>
+            <button mat-button>SHARE</button>
+        </mat-card-actions>
+    </mat-card>
+</div>
