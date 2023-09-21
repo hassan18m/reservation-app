@@ -21,6 +21,7 @@ public class MapEntity {
         userDto.setLastName(user.getLastName());
         userDto.setEmail(user.getEmail());
         userDto.setPassword(user.getPassword());
+        userDto.setProducts(user.getProducts());
 
         return userDto;
     }

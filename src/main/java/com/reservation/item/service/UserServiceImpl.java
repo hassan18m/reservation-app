@@ -100,6 +100,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(NotFoundException::new);
 
         List<Product> products = foundUser.getProducts();
+        if (products.contains(foundProduct)) {
+            throw new RuntimeException("Product already reserved!");
+        }
         products.add(foundProduct);
         foundUser.setProducts(products);
         userRepository.save(foundUser);

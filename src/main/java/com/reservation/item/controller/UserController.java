@@ -63,11 +63,13 @@ public class UserController {
 
     @PostMapping("/{userId}/addProduct/{productId}")
     public ResponseEntity<?> addProductsToUser(@PathVariable Long userId, @PathVariable Long productId) {
-        UserDto userDto = userService.addProductsToUser(userId, productId);
-        if (userDto != null) {
-            return ResponseEntity.ok(userDto);
+        try {
+            return ResponseEntity.ok(userService.addProductsToUser(userId, productId));
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/{id}")
