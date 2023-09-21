@@ -51,9 +51,7 @@ public class UserServiceImpl implements UserService {
             @CacheEvict(value = "user", key = "#user.id")})
     public UserDto addUser(User user) {
         userRepository.save(user);
-        UserDto userDto = new UserDto();
-        MapEntity.mapUserToUserDto(user);
-        return userDto;
+        return MapEntity.mapUserToUserDto(user);
     }
 
     @Override
