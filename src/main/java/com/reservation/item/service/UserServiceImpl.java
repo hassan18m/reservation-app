@@ -65,10 +65,7 @@ public class UserServiceImpl implements UserService {
             MapEntity.mapUserProperties(userToUpdate, user);
             userRepository.save(userToUpdate);
 
-            UserDto userDto = new UserDto();
-            MapEntity.mapUserToUserDto(userToUpdate);
-
-            return userDto;
+            return MapEntity.mapUserToUserDto(userToUpdate);
         }
         return null;
     }
@@ -99,12 +96,12 @@ public class UserServiceImpl implements UserService {
         Product foundProduct = productRepository.findById(productId)
                 .orElseThrow(NotFoundException::new);
 
-        List<Product> products = foundUser.getProducts();
-        if (products.contains(foundProduct)) {
+        List<Product> userProducts = foundUser.getProducts();
+        if (userProducts.contains(foundProduct)) {
             throw new RuntimeException("Product already reserved!");
         }
-        products.add(foundProduct);
-        foundUser.setProducts(products);
+        userProducts.add(foundProduct);
+        foundUser.setProducts(userProducts);
         userRepository.save(foundUser);
 
         return MapEntity.mapUserToUserDto(foundUser);

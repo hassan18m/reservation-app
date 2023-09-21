@@ -14,5 +14,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByAddedDateBetween(LocalDate startDate, LocalDate endDate);
 
-    List<Product> findTopByOrderByPriceDesc();
+    List<Product> findTop5ByOrderByPriceDesc();
 }

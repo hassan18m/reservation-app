@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -88,9 +87,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getTopExpensiveProducts() {
-        return productRepository.findTopByOrderByPriceDesc().stream()
+        return productRepository.findTop5ByOrderByPriceDesc()
+                .stream()
                 .map(MapEntity::mapProductToProductDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

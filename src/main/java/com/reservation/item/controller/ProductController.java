@@ -48,7 +48,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.findByAddedDateBetween(startDate, endDate));
     }
 
-    @GetMapping("/top")
+    @GetMapping("/top5")
     public ResponseEntity<List<ProductDto>> getTopExpensiveProducts() {
         return ResponseEntity.ok(productService.getTopExpensiveProducts());
     }
