@@ -1,10 +1,7 @@
 package com.reservation.item.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -17,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -37,8 +35,4 @@ public class Product {
 
     @Column(name = "added_date", nullable = false)
     private LocalDate addedDate;
-
-    @ManyToOne
-    @JoinColumn
-    User user;
 }

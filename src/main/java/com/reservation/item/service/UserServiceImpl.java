@@ -2,11 +2,15 @@ package com.reservation.item.service;
 
 import com.reservation.item.entity.Product;
 import com.reservation.item.entity.User;
+import com.reservation.item.exception.NotFoundException;
 import com.reservation.item.helper.MapEntity;
 import com.reservation.item.model.UserDto;
 import com.reservation.item.repository.ProductRepository;
 import com.reservation.item.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,26 +29,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable("users")
     public List<UserDto> getUsers() {
-        return userRepository.findAll().stream().map(user -> {
-            UserDto userDto = new UserDto();
-            MapEntity.mapUserToUserDto(user);
-            return userDto;
-        }).toList();
+        return userRepository.findAll()
+                .stream()
+                .map(MapEntity::mapUserToUserDto)
+                .toList();
     }
 
     @Override
+    @Cacheable("user")
     public UserDto getUserById(Long id) {
-        Optional<User> foundUser = userRepository.findById(id);
-        if (foundUser.isPresent()) {
-            UserDto userDto = new UserDto();
-            MapEntity.mapUserToUserDto(foundUser.get());
-            return userDto;
-        }
-        return null;
+        return userRepository.findById(id)
+                .map(MapEntity::mapUserToUserDto)
+                .orElseThrow(NotFoundException::new);
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "users", allEntries = true),
+            @CacheEvict(value = "user", key = "#user.id")})
     public UserDto addUser(User user) {
         userRepository.save(user);
         UserDto userDto = new UserDto();
@@ -53,6 +57,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "users", allEntries = true),
+            @CacheEvict(value = "user", key = "#user.id")})
     public UserDto updateUser(Long id, User user) {
         Optional<User> userFound = userRepository.findById(id);
         if (userFound.isPresent()) {
@@ -69,37 +76,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "users", allEntries = true),
+            @CacheEvict(value = "user", key = "#id")})
     public UserDto deleteUser(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            userRepository.deleteById(id);
-            UserDto userDto = new UserDto();
-            MapEntity.mapUserToUserDto(user.get());
-            return userDto;
-        }
-        return null;
+        User user = userRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
+
+        userRepository.deleteById(id);
+        return MapEntity.mapUserToUserDto(user);
     }
 
     @Override
+    @CacheEvict(value = "users", allEntries = true)
     public void deleteAll() {
         userRepository.deleteAll();
     }
 
     @Override
     public UserDto addProductsToUser(Long userId, Long productId) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Product> product = productRepository.findById(productId);
+        User foundUser = userRepository.findById(userId)
+                .orElseThrow(NotFoundException::new);
 
-        if (user.isPresent() && product.isPresent()) {
-            User foundUser = user.get();
-            Product foundProduct = product.get();
-            List<Product> products = foundUser.getProducts();
-            products.add(foundProduct);
-            foundUser.setProducts(products);
-            userRepository.save(foundUser);
-            return MapEntity.mapUserToUserDto(foundUser);
-        }
+        Product foundProduct = productRepository.findById(productId)
+                .orElseThrow(NotFoundException::new);
 
-        return null;
+        List<Product> products = foundUser.getProducts();
+        products.add(foundProduct);
+        foundUser.setProducts(products);
+        userRepository.save(foundUser);
+
+        return MapEntity.mapUserToUserDto(foundUser);
     }
 }

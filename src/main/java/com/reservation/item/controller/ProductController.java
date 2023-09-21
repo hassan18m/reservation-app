@@ -1,6 +1,8 @@
 package com.reservation.item.controller;
 
 import com.reservation.item.entity.Product;
+import com.reservation.item.exception.NotFoundException;
+import com.reservation.item.model.GetProductsResponse;
 import com.reservation.item.model.ProductDto;
 import com.reservation.item.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,11 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> getProducts() {
-        return ResponseEntity.ok(productService.getProducts());
+    public ResponseEntity<GetProductsResponse> getProducts() {
+        List<ProductDto> products = productService.getProducts();
+        int count = products.size();
+
+        return ResponseEntity.ok(new GetProductsResponse(products, count));
     }
 
     @GetMapping("/{id}")
@@ -37,12 +42,29 @@ public class ProductController {
 
     @GetMapping("/date")
     public ResponseEntity<List<ProductDto>> productsBetweenDate(@RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return ResponseEntity.ok(productService.findByAddedDateBetween(startDate, endDate));
     }
 
     @GetMapping("/top")
     public ResponseEntity<List<ProductDto>> getTopExpensiveProducts() {
         return ResponseEntity.ok(productService.getTopExpensiveProducts());
+    }
+
+    @GetMapping("/prod-populate")
+    public ResponseEntity<Void> productsPopulate() {
+        for (int i = 1; i <= 2500; i++) {
+            Product product = new Product();
+            product.setName("Name" + i);
+            product.setDescription("Description" + i);
+            product.setPrice(500D);
+            product.setQuantity(5);
+            productService.addProduct(product);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
@@ -61,5 +83,20 @@ public class ProductController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ProductDto> deleteProduct(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(productService.deleteProduct(id));
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll() {
+        productService.deleteAll();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
