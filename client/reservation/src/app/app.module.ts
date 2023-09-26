@@ -25,6 +25,9 @@ import { UsersTableComponent } from './components/users-table/users-table.compon
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { DialogAddProductComponent } from './components/dialog-add-product/dialog-add-product.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+
 
 @NgModule({
   declarations: [
@@ -34,6 +37,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
     LoginComponent,
     RegisterComponent,
     UsersTableComponent,
+    DialogAddProductComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,6 +58,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent],
