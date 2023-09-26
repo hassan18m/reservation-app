@@ -5,8 +5,6 @@ import com.reservation.item.model.AuthenticationResponse;
 import com.reservation.item.model.LoginRequest;
 import com.reservation.item.model.RegisterRequest;
 import com.reservation.item.service.AuthenticationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-    private final static Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Autowired
     public AuthenticationController(AuthenticationService authenticationService) {

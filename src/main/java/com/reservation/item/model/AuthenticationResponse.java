@@ -11,5 +11,6 @@ import lombok.Builder;
 @Builder
 public class AuthenticationResponse {
     private String token;
+    private Long id;
 }
 

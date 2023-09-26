@@ -29,7 +29,7 @@ export class LoginComponent {
     this.authService.login(this.form.email, this.form.password).subscribe({
       next: (data: AuthenticationResponse) => {
         console.log(data);
-        this.localStorageService.saveUser(data.token);
+        this.localStorageService.saveUser(data);
         this.router.navigate(['/']).then(() => window.location.reload());
       },
       error: (err) => {

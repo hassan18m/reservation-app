@@ -12,7 +12,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
   templateUrl: './users-table.component.html',
   styleUrls: ['./users-table.component.css'],
 })
-export class UsersTableComponent implements AfterViewInit, OnInit {
+export class UsersTableComponent implements OnInit {
   users!: User[];
   usersData!: UserData[];
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email'];
@@ -26,10 +26,6 @@ export class UsersTableComponent implements AfterViewInit, OnInit {
     private localStorage: LocalStorageService,
     private _liveAnnouncer: LiveAnnouncer
   ) {
-    // Create 100 users
-    // const users = Array.from({length: 100}, (_, k) => createNewUser(k + 1));
-    // Assign the data to the data source for the table to render
-    // this.dataSource = new MatTableDataSource(users);
   }
 
   ngOnInit() {
@@ -46,12 +42,9 @@ export class UsersTableComponent implements AfterViewInit, OnInit {
       });
       this.usersData = dataSourceUsers;
       this.dataSource = new MatTableDataSource(dataSourceUsers);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     });
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   applyFilter(event: Event) {
@@ -61,13 +54,5 @@ export class UsersTableComponent implements AfterViewInit, OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
-  }
-
-  announceSortChange(sortState: Sort) {
-    console.log(sortState);
-    const sortedUsers = this.usersData.sort((a: UserData, b: UserData) =>
-      a.email.localeCompare(b.email)
-    );
-    this.dataSource = new MatTableDataSource(sortedUsers);
   }
 }

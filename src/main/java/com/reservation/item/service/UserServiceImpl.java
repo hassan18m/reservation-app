@@ -89,6 +89,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "users", allEntries = true),
+            @CacheEvict(value = "user", key = "#userId") })
     public UserDto addProductsToUser(Long userId, Long productId) {
         User foundUser = userRepository.findById(userId)
                 .orElseThrow(NotFoundException::new);

@@ -41,6 +41,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "products", allEntries = true),
+            @CacheEvict(value = "product", key = "#product.id")})
     public ProductDto addProduct(Product product) {
         if (productRepository.findByName(product.getName()).isPresent()) {
             throw new RuntimeException();

@@ -2,6 +2,7 @@
   <button mat-button routerLink="/">My App</button>
   <span class="example-spacer"></span>
   <button *ngIf="isLoggedIn" mat-button routerLink="/users">Users</button>
+  <button *ngIf="isLoggedIn" mat-button routerLink="/users-table">Users Table</button>
   <button *ngIf="isLoggedIn" mat-button routerLink="/products">Products</button>
   <button *ngIf="!isLoggedIn" mat-button routerLink="/register">
     Register
