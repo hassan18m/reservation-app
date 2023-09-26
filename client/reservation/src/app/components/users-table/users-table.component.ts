@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { LocalStorageService } from 'src/app/services/localstorage.service';
 import { UserService } from 'src/app/services/user.service';
 import { User, UserData } from 'src/app/types/user';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-users-table',
@@ -23,13 +22,12 @@ export class UsersTableComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private localStorage: LocalStorageService,
-    private _liveAnnouncer: LiveAnnouncer
+    private localStorage: LocalStorageService
   ) {
   }
 
   ngOnInit() {
-    const token = this.localStorage.getUser();
+    const token = this.localStorage.getUser()?.token;
     this.userService.getUsers(token).subscribe((data) => {
       this.users = data.users;
       const dataSourceUsers = data.users.map((user: User) => {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { User } from '../types/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
@@ -19,7 +19,7 @@ export class UserService {
     private localStorage: LocalStorageService
   ) { }
 
-  getUsers(token: string | null): Observable<UserResponse> {
+  getUsers(token?: string): Observable<UserResponse> {
     if (token) {
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',

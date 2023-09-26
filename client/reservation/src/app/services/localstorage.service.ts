@@ -12,7 +12,7 @@ export class LocalStorageService {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
   }
 
-  public getUser(): { token: string, id: number } | null {
+  public getUser(): { token: string; id: number } | null {
     const userString = localStorage.getItem(USER_KEY);
     if (userString) {
       return JSON.parse(userString);

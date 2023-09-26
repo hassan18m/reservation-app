@@ -17,7 +17,7 @@ export class ProductService {
     private localStorage: LocalStorageService
   ) { }
 
-  getProducts(token: string | null): Observable<ProductResponse> {
+  getProducts(token?: string): Observable<ProductResponse> {
     if (token) {
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
@@ -28,5 +28,18 @@ export class ProductService {
       return this.http.get<ProductResponse>(this.url);
     }
   }
+
+  addProduct(product: Product, token?: string) {
+    if (token) {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      });
+      return this.http.post<Product>(this.url, product, { headers: headers });
+    } else {
+      return null;
+    }
+  }
+
   // addProducts():
 }
