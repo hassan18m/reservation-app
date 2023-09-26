@@ -5,6 +5,8 @@ import com.reservation.item.model.AuthenticationResponse;
 import com.reservation.item.model.LoginRequest;
 import com.reservation.item.model.RegisterRequest;
 import com.reservation.item.service.AuthenticationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final static Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Autowired
     public AuthenticationController(AuthenticationService authenticationService) {
@@ -27,10 +30,11 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
-        try{
+        try {
             return ResponseEntity.ok(authenticationService.register(registerRequest));
-        }catch (Exception e) {
-            return new ResponseEntity<>(ExceptionHelper.extractException(e.getCause().toString()), HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()));        }
+        } catch (Exception e) {
+            return new ResponseEntity<>(ExceptionHelper.extractException(e.getCause().toString()), HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()));
+        }
     }
 
 

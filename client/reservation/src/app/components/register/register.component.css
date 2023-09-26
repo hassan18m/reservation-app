@@ -1,0 +1,26 @@
+/* .register-container{
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+ */
+
+
+.card.card-container {
+    padding-top: 50px;
+    border: none;
+    display: flex;
+    align-items: center;
+}
+
+#profile-img {
+    width: 200px;
+    height: 200px;
+}
+
+.register-form {
+    width: 30%;
+}

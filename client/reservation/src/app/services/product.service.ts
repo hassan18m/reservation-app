@@ -1,23 +1,32 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
 import { Product } from '../types/product';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { ProductResponse } from '../types/productResponse';
+import { LocalStorageService } from './localstorage.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
-
-  private url: string = "https://localhost:443/api/v1/products";
+  private url: string = 'https://localhost:443/api/v1/products';
   products!: Product[];
 
+  constructor(
+    private http: HttpClient,
+    private localStorage: LocalStorageService
+  ) { }
 
-  constructor(private http: HttpClient) { }
-
-  getProducts(): Observable<ProductResponse> {
-    
-    return this.http.get<ProductResponse>(this.url)
+  getProducts(token: string | null): Observable<ProductResponse> {
+    if (token) {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      });
+      return this.http.get<ProductResponse>(this.url, { headers: headers });
+    } else {
+      return this.http.get<ProductResponse>(this.url);
+    }
   }
+  // addProducts():
 }

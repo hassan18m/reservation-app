@@ -8,3 +8,10 @@ export interface User {
     email: string;
     products: Product[];
 }
+
+export interface UserData {
+    id: Number;
+    firstName: string;
+    lastName: string;
+    email: string;
+}

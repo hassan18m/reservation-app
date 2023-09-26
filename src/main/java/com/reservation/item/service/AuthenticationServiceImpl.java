@@ -6,6 +6,7 @@ import com.reservation.item.model.LoginRequest;
 import com.reservation.item.model.RegisterRequest;
 import com.reservation.item.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,10 +21,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    @Override
+    @CacheEvict(value = "users", allEntries = true)
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
-                .firstName(request.getFirstname())
-                .lastName(request.getLastname())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
