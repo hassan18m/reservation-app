@@ -1,4 +1,11 @@
+<div class="buttons">
+    <app-pagination class="pagination" #pagination [collectionSize]="totalCount" [pageSize]="pageSize"
+        [firstLastButtons]="true" [maxSize]="2" (currentPageEventEmmiter)="setCurrentPage($event)"></app-pagination>
+    <button mat-button (click)="openDialog()">Add Product</button>
+</div>
+
 <div class="container responsive-grid">
+
     <mat-card *ngFor="let product of products">
         <mat-card-header>
             <mat-card-title>{{ product.name }}</mat-card-title>
@@ -11,7 +18,7 @@
             <p>{{ product.quantity }}</p>
         </mat-card-content>
         <mat-card-actions>
-            <button mat-button (click)="addProductToUser(product.id)">RESERVE</button>
+            <button mat-button (click)="addProductToUser(product.id)">Make Reservation</button>
             <!-- <button mat-button>SHARE</button> -->
         </mat-card-actions>
     </mat-card>

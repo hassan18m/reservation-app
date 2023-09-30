@@ -27,6 +27,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { DialogAddProductComponent } from './components/dialog-add-product/dialog-add-product.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PaginationComponent } from './components/pagination/pagination.component';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     RegisterComponent,
     UsersTableComponent,
     DialogAddProductComponent,
+    PaginationComponent,
   ],
   imports: [
     BrowserModule,
