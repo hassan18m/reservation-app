@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,8 +46,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Caching(evict = {
             @CacheEvict(value = "products", allEntries = true),
-            @CacheEvict(value = "product", key = "#product.id")})
-    public ProductDto addProduct(Product product) {
+            @CacheEvict(value = "product", key = "#productDto.id")})
+    public ProductDto addProduct(ProductDto productDto) {
+        Product product = MapEntity.mapProductDtoToProduct(productDto);
         if (productRepository.findByName(product.getName()).isPresent()) {
             throw new RuntimeException();
         }
@@ -57,14 +61,17 @@ public class ProductServiceImpl implements ProductService {
     @Caching(evict = {
             @CacheEvict(value = "products", allEntries = true),
             @CacheEvict(value = "product", key = "#id")})
-    public ProductDto updateProduct(Long id, Product product) {
+    public ProductDto updateProduct(Long id, ProductDto productDto) {
         Product modifyingProduct = productRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
 
         try {
+            Product product = MapEntity.mapProductDtoToProduct(productDto);
             MapEntity.mapProductProperties(modifyingProduct, product);
             productRepository.save(modifyingProduct);
-            return MapEntity.mapProductToProductDto(modifyingProduct);
+
+            productDto = MapEntity.mapProductToProductDto(modifyingProduct);
+            return productDto;
         } catch (Exception e) {
             throw new RuntimeException("Name already existent.");
         }
@@ -102,5 +109,30 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .map(MapEntity::mapProductToProductDto)
                 .toList();
+    }
+
+    @Override
+    public Page<ProductDto> findAll(Pageable page) {
+        List<ProductDto> productDtos = productRepository.findAll(page)
+                .stream()
+                .map(MapEntity::mapProductToProductDto)
+                .toList();
+
+        return new PageImpl<>(productDtos, page, productDtos.size());
+    }
+
+    @Override
+    public Page<ProductDto> findByNameContaining(String name, Pageable page) {
+        List<ProductDto> productDtos = productRepository.findByNameContainingIgnoreCase(name, page)
+                .stream()
+                .map(MapEntity::mapProductToProductDto)
+                .toList();
+
+        return new PageImpl<>(productDtos, page, productDtos.size());
+    }
+
+    @Override
+    public long getTotalProductsCount() {
+        return productRepository.count();
     }
 }

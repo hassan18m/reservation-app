@@ -2,6 +2,8 @@ package com.reservation.item.service;
 
 import com.reservation.item.entity.User;
 import com.reservation.item.model.UserDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ public interface UserService {
 
     UserDto getUserById(Long id);
 
-    UserDto addUser(User user);
+    void addUser(User user);
 
     UserDto updateUser(Long id, User user);
 
@@ -19,4 +21,8 @@ public interface UserService {
     void deleteAll();
 
     UserDto addProductsToUser(Long userId, Long productId);
+
+    Page<UserDto> findAll(Pageable page);
+
+    Page<UserDto> findByFirstNameContaining(String firstName, Pageable page);
 }

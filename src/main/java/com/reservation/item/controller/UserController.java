@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.reservation.item.entity.User;
 import com.reservation.item.exception.NotFoundException;
 import com.reservation.item.helper.ExceptionHelper;
+import com.reservation.item.helper.MapEntity;
 import com.reservation.item.model.ExternalUser;
 import com.reservation.item.model.GetUsersResponse;
 import com.reservation.item.model.UserDto;
@@ -50,9 +51,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addUser(@RequestBody @Validated User user) {
+    public ResponseEntity<?> addUser(@RequestBody @Validated UserDto userDto) {
         try {
-            UserDto userDto = userService.addUser(user);
+            User user = MapEntity.mapUserDtoToUser(userDto);
+            userService.addUser(user);
+
+            userDto = MapEntity.mapUserToUserDto(user);
             return ResponseEntity.ok(userDto);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -73,10 +77,11 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
         try {
-            UserDto userDto = userService.updateUser(id, user);
-            if (userDto != null) {
+            User user = MapEntity.mapUserDtoToUser(userDto);
+            UserDto foundUser = userService.updateUser(id, user);
+            if (foundUser != null) {
                 return ResponseEntity.ok(userDto);
             } else {
                 return new ResponseEntity<>(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()));

@@ -12,4 +12,5 @@ import java.util.List;
 public class GetProductsResponse {
     private List<ProductDto> products;
     private int count;
+    private long totalCount;
 }

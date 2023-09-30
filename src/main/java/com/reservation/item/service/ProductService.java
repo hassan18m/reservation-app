@@ -1,7 +1,8 @@
 package com.reservation.item.service;
 
-import com.reservation.item.entity.Product;
 import com.reservation.item.model.ProductDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,9 +12,9 @@ public interface ProductService {
 
     ProductDto getProductById(Long id);
 
-    ProductDto addProduct(Product product);
+    ProductDto addProduct(ProductDto productDto);
 
-    ProductDto updateProduct(Long id, Product product);
+    ProductDto updateProduct(Long id, ProductDto productDto);
 
     ProductDto deleteProduct(Long id);
 
@@ -22,4 +23,10 @@ public interface ProductService {
     List<ProductDto> getTopExpensiveProducts();
 
     List<ProductDto> findByAddedDateBetween(LocalDate startDate, LocalDate endDate);
+
+    Page<ProductDto> findAll(Pageable page);
+
+    Page<ProductDto> findByNameContaining(String name, Pageable page);
+
+    long getTotalProductsCount();
 }

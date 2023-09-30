@@ -2,6 +2,7 @@ package com.reservation.item.controller;
 
 import com.reservation.item.entity.Product;
 import com.reservation.item.exception.NotFoundException;
+import com.reservation.item.helper.MapEntity;
 import com.reservation.item.model.GetProductsResponse;
 import com.reservation.item.model.ProductDto;
 import com.reservation.item.service.ProductService;
@@ -27,8 +28,9 @@ public class ProductController {
     public ResponseEntity<GetProductsResponse> getProducts() {
         List<ProductDto> products = productService.getProducts();
         int count = products.size();
+        long totalCount = productService.getTotalProductsCount();
 
-        return ResponseEntity.ok(new GetProductsResponse(products, count));
+        return ResponseEntity.ok(new GetProductsResponse(products, count, totalCount));
     }
 
     @GetMapping("/{id}")
@@ -61,25 +63,25 @@ public class ProductController {
             product.setDescription("Description" + i);
             product.setPrice(500D);
             product.setQuantity(5);
-            productService.addProduct(product);
+            productService.addProduct(MapEntity.mapProductToProductDto(product));
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> addProduct(@RequestBody Product product) {
+    public ResponseEntity<?> addProduct(@RequestBody ProductDto productDto) {
         try {
-            return ResponseEntity.ok(productService.addProduct(product));
+            return ResponseEntity.ok(productService.addProduct(productDto));
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
+    public ResponseEntity<?> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDto productDto) {
         try {
-            return ResponseEntity.ok(productService.updateProduct(id, product));
+            return ResponseEntity.ok(productService.updateProduct(id, productDto));
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

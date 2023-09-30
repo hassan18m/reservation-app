@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,9 +52,9 @@ public class UserServiceImpl implements UserService {
     @Caching(evict = {
             @CacheEvict(value = "users", allEntries = true),
             @CacheEvict(value = "user", key = "#user.id")})
-    public UserDto addUser(User user) {
+    public void addUser(User user) {
         userRepository.save(user);
-        return MapEntity.mapUserToUserDto(user);
+        MapEntity.mapUserToUserDto(user);
     }
 
     @Override
@@ -91,7 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Caching(evict = {
             @CacheEvict(value = "users", allEntries = true),
-            @CacheEvict(value = "user", key = "#userId") })
+            @CacheEvict(value = "user", key = "#userId")})
     public UserDto addProductsToUser(Long userId, Long productId) {
         User foundUser = userRepository.findById(userId)
                 .orElseThrow(NotFoundException::new);
@@ -108,5 +111,25 @@ public class UserServiceImpl implements UserService {
         userRepository.save(foundUser);
 
         return MapEntity.mapUserToUserDto(foundUser);
+    }
+
+    @Override
+    public Page<UserDto> findAll(Pageable page) {
+        List<UserDto> userDtos = userRepository.findAll(page)
+                .stream()
+                .map(MapEntity::mapUserToUserDto)
+                .toList();
+
+        return new PageImpl<>(userDtos, page, userDtos.size());
+    }
+
+    @Override
+    public Page<UserDto> findByFirstNameContaining(String firstName, Pageable page) {
+        List<UserDto> userDtos = userRepository.findByFirstNameContainingIgnoreCase(firstName, page)
+                .stream()
+                .map(MapEntity::mapUserToUserDto)
+                .toList();
+
+        return new PageImpl<>(userDtos, page, userDtos.size());
     }
 }
